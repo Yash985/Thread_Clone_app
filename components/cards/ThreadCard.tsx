@@ -22,7 +22,7 @@ comments: {
         author: {
         image:string,
      }
-    }[]
+    }[],
     isComment?: boolean;
 }
 const ThreadCard = ({
@@ -62,7 +62,7 @@ const ThreadCard = ({
                             {content}
                         </p>
 
-                        <div className="mt-5 flex flex-col gap-3">
+                        <div className={`${isComment && 'mt-10'}mt-5 flex flex-col gap-3`}>
                             <div className="flex gap-3.5">
                                 <Image
                                     src="/assets/heart-gray.svg"
