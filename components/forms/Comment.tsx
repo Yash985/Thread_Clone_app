@@ -13,11 +13,11 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { usePathname,useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { CommentValidation } from "@/lib/validations/thread";
 import Image from "next/image";
 import { addCommentToThread } from "@/lib/actions/thread.actions";
-// import { createThread } from "@/lib/actions/thread.actions";
+
 
 interface Props{
     threadId: string;
@@ -26,10 +26,9 @@ interface Props{
 }
 
 const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
-    const router = useRouter();
     const pathname = usePathname();
   
-      const form = useForm({
+      const form =  useForm<z.infer<typeof CommentValidation>>({
           resolver: zodResolver(CommentValidation),
           defaultValues:{
               thread: '',

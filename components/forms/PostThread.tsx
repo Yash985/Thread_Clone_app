@@ -1,5 +1,6 @@
 "use client"
 import { useForm } from "react-hook-form";
+import { useOrganization } from "@clerk/nextjs";
 import * as z from "zod"
 import {
     Form,
@@ -16,45 +17,38 @@ import { usePathname,useRouter } from "next/navigation";
 import { ThreadValidation } from "@/lib/validations/thread";
 import { createThread } from "@/lib/actions/thread.actions";
 
-// import { updateUser } from "@/lib/actions/user.actions";
 
 
 interface Props{
-    user: {
-        id: string,
-        objectId: string,
-        username: string,
-        name: string,
-        bio: string,
-        image: string,
-    };
-    btnTitle: string;
+    userId:string
 }
 
 
     
    
 
-function PostThread({ userId }: { userId: string }) {
+function PostThread({ userId }: Props) {
 
 
     const router = useRouter();
     const pathname = usePathname();
+
+    const { organization } = useOrganization();
   
-      const form = useForm({
-          resolver: zodResolver(ThreadValidation),
-          defaultValues:{
-              thread: '',
-              accountId:userId,
-          },
-      });
+    const form = useForm<z.infer<typeof ThreadValidation>>({
+        resolver: zodResolver(ThreadValidation),
+        defaultValues: {
+            thread: '',
+            accountId: userId,
+        },
+    });
 
     
-    const onSubmit = async (values:z.infer<typeof ThreadValidation>) => {
+    const onSubmit = async (values: z.infer<typeof ThreadValidation>) => {
         await createThread({
             text: values.thread,
             author: userId,
-            communityId: null,
+            communityId: organization ? organization.id : null,
             path: pathname,
         });
         router.push("/");
